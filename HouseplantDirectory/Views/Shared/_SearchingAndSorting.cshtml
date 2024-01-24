@@ -1,0 +1,33 @@
+﻿@using HouseplantDirectory.Enums
+@model SearchingAndSorting
+@if (Model != null)
+{
+    var sortOptions = new Dictionary<int, string>
+    {
+        [(int)SortOption.AlphabeticalAsc] = "Сортировать от А до Я",
+        [(int)SortOption.AlphabeticalDesc] = "Сортировать от Я до А",
+        [(int)SortOption.CreatedAsc] = "Сортировать от старых к новым",
+        [(int)SortOption.CreatedDesc] = "Сортировать от новых к старым"
+    };
+    if (Model.Source == SearchingAndSorting.SourceOption.AdminArticles)
+    {
+        sortOptions.Add((int)SortOption.ActiveAsc, "Сортировать от неактивных к активным");
+        sortOptions.Add((int)SortOption.ActiveDesc, "Сортировать от активных к неактивным");
+    }
+    <div class="container-fluid">
+        <form class="d-flex" method="get">
+            <select id="sort" name="sort" class="form-select me-2" aria-label="Сортировка">
+                @foreach (var item in sortOptions)
+                {
+                    <option value="@item.Key">@item.Value</option>
+                }
+            </select>
+            <input name="search" class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск" value="@Model.Searching">
+            <button class="btn btn-outline-primary" type="submit">Применить</button>
+        </form>
+    </div>
+
+    <script>
+        document.querySelector('#sort').value = '@((int)Model.Sorting)';
+    </script>
+}

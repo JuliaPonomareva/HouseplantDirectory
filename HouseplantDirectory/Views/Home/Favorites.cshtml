@@ -1,0 +1,33 @@
+﻿@using HouseplantDirectory.Constants
+@using HouseplantDirectory.Data.Models
+@model List<Article>
+@{
+    ViewData["Title"] = "Избранное";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row row-cols-1 row-cols-md-4 g-4 my-4">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card h-100">
+                @if (!string.IsNullOrWhiteSpace(item.Image))
+                {
+                    <img src="@($"/{AppConstants.ImagesFolder}/{item.Image}")" class="card-img-top" />
+                }
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text"><span class="badge bg-success">@item.ArticleType.Name</span></p>
+                    <p class="card-text">@string.Join("", item.Description.Take(50))@(item.Description.Length > 50 ? "..." : "")</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/Home/Articles/@item.Id" class="btn btn-primary">Подробнее</a>
+                    <form method="post" action="/Home/Favorites/@item.Id/Remove">
+                        <button type="submit" class="btn btn-danger mt-2">Удалить из избранного</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>

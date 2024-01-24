@@ -1,0 +1,88 @@
+﻿@using HouseplantDirectory.Data.Models
+@using HouseplantDirectory.Enums
+@model List<CalculatorValue>
+@{
+    ViewData["Title"] = "Калькулятор";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p>Выберите тип вещества и название для подсчета необходимого количества</p>
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            <label class="control-label">Тип вещества</label>
+            <select id="substanceType" class="form-control">
+                <option value="" disabled selected hidden>Выберите тип...</option>
+                @foreach (var substanceType in Model.Select(s => s.SubstanceType).Distinct().OrderBy(s => s))
+                {
+                    <option value="@((int)substanceType)">@substanceType.GetDisplayName()</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Название вещества</label>
+            <select id="calculatorValue" class="form-control" disabled>
+                <option value="" disabled selected hidden>Выберите название...</option>
+                @foreach (var item in Model.OrderBy(s => s.Name))
+                {
+                    <option value="@item.Id"
+                            class="substanceType-@((int)item.SubstanceType)"
+                            data-quantitytype="@item.QuantityType.GetDisplayName()"
+                            data-liquidamount="@item.LiquidAmount"
+                            data-substanceamount="@item.SubstanceAmount">
+                        @item.Name
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Необходимое количество жидкости (Миллилитр)</label>
+            <input id="liquidAmount" type="text" class="form-control" disabled />
+        </div>
+        <div class="form-group">
+            <label class="control-label">Необходимое количество вещества (<span id="quantityType">Грам</span>)</label>
+            <input id="substanceAmount" type="text" class="form-control" disabled />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelector('#substanceType').addEventListener("change", function (event) {
+            let value = event.target.value;
+            $('#calculatorValue option').hide();
+            $('#calculatorValue .substanceType-' + value).show();
+            $('#calculatorValue').prop('disabled', false);
+        });
+
+        let liquidAmountItemValue = undefined;
+        let substanceAmountItemValue = undefined;
+        document.querySelector('#calculatorValue').addEventListener("change", function (event) {
+            let selectedOption = $('#calculatorValue option:selected');
+            liquidAmountItemValue = Number($(selectedOption).data('liquidamount'));
+            substanceAmountItemValue = Number($(selectedOption).data('substanceamount'));
+            $('#liquidAmount').prop('disabled', false);
+            $('#substanceAmount').prop('disabled', false);
+            $('#quantityType').text($(selectedOption).data('quantitytype'));
+        });
+
+        document.querySelector('#liquidAmount').addEventListener("input", function (event) {
+            this.value = Number(event.target.value.replace(/[^0-9]/g, ''));
+            let newSubstanceAmountUserValue = Math.round((this.value * substanceAmountItemValue) / liquidAmountItemValue);
+            let oldSubstanceAmountUserValue = Number($('#substanceAmount').val());
+            if (newSubstanceAmountUserValue !== oldSubstanceAmountUserValue) {
+                $('#substanceAmount').val(newSubstanceAmountUserValue);
+            }
+        });
+
+        document.querySelector('#substanceAmount').addEventListener("input", function (event) {
+            this.value = event.target.value.replace(/[^0-9]/g, '');
+            let newLiquidAmountUserValue = Math.round((this.value * liquidAmountItemValue) / substanceAmountItemValue);
+            let oldLiquidAmountUserValue = Number($('#liquidAmount').val());
+            if (newLiquidAmountUserValue !== oldLiquidAmountUserValue) {
+                $('#liquidAmount').val(newLiquidAmountUserValue);
+            }
+        });
+    </script>
+}

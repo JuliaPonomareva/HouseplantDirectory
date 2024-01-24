@@ -1,0 +1,30 @@
+﻿@using HouseplantDirectory.Constants
+@using HouseplantDirectory.Data.Models
+@model Article
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="card my-4">
+    @if (!string.IsNullOrWhiteSpace(Model.Image))
+    {
+        <img src="@($"/{AppConstants.ImagesFolder}/{Model.Image}")" class="card-img-top" />
+    }
+    <div class="card-body">
+        <h1 class="card-title">@Model.Name</h1>
+        <p class="card-text"><span class="badge bg-success">@Model.ArticleType.Name</span></p>
+        <p class="card-text">
+            <small class="text-muted">
+                Автор: @Model.Writer
+                <br>
+                Дата создания: @Model.DateCreated.ToString("dd.MM.yyyy")
+                <br>
+                Дата обновления: @Model.DateUpdated.ToString("dd.MM.yyyy")
+            </small>
+        </p>
+        <p class="card-text">@Model.Description</p>
+        <form method="post" action="/Home/Favorites/@Model.Id/Add">
+            <button type="submit" class="btn btn-primary">Добавить в избранное</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,77 @@
+﻿@model IEnumerable<HouseplantDirectory.Data.Models.CalculatorValue>
+
+@{
+    ViewData["Title"] = "Значения калькулятора";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create">Создать значение калькулятора</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Название
+            </th>
+            <th>
+                Тип вещества
+            </th>
+            <th>
+                Тип меры веса
+            </th>
+            <th>
+                Количество жидкости
+            </th>
+            <th>
+                Количество вещества
+            </th>
+            <th>
+                Активное
+            </th>
+            <th>
+                Создано
+            </th>
+            <th>
+                Обновлено
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubstanceType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.QuantityType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LiquidAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SubstanceAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsActive)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateCreated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateUpdated)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Детали</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

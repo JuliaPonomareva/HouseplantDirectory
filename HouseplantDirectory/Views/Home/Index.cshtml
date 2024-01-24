@@ -1,0 +1,34 @@
+﻿@using HouseplantDirectory.Constants
+@model ArticleEntriesViewModel
+@{
+    ViewData["Title"] = "Главная";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<partial name="_SearchingAndSorting" model="Model.SearchAndSort" />
+
+<div class="row row-cols-1 row-cols-md-4 g-4 my-4">
+    @foreach (var item in Model.Entries)
+    {
+        <div class="col">
+            <div class="card h-100">
+                @if (!string.IsNullOrWhiteSpace(item.Image))
+                {
+                    <img src="@($"/{AppConstants.ImagesFolder}/{item.Image}")" class="card-img-top" />
+                }
+                <div class="card-body">
+                    <h5 class="card-title">@item.Name</h5>
+                    <p class="card-text"><span class="badge bg-success">@item.ArticleType.Name</span></p>
+                    <p class="card-text">@string.Join("", item.Description.Take(50))@(item.Description.Length > 50 ? "..." : "")</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/Home/Articles/@item.Id" class="btn btn-primary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<partial name="_Paging" model="Model.Paging" />
+
